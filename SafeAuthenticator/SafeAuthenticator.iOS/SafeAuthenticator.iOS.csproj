@@ -40,6 +40,7 @@
     <MtouchExtraArgs>
     </MtouchExtraArgs>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <CodeAnalysisRuleSet>..\SafeAuthenticator.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>pdbonly</DebugType>
@@ -59,6 +60,7 @@
     <MtouchExtraArgs>
     </MtouchExtraArgs>
     <SignAssembly>true</SignAssembly>
+    <CodeAnalysisRuleSet>..\SafeAuthenticator.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>pdbonly</DebugType>
@@ -74,6 +76,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <MtouchExtraArgs>
     </MtouchExtraArgs>
+    <CodeAnalysisRuleSet>..\SafeAuthenticator.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
     <DebugSymbols>true</DebugSymbols>
@@ -99,6 +102,7 @@
     <CodesignProvision>
     </CodesignProvision>
     <MtouchNoSymbolStrip>false</MtouchNoSymbolStrip>
+    <CodeAnalysisRuleSet>..\SafeAuthenticator.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Acr.Support.iOS, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">

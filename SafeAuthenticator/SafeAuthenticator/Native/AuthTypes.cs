@@ -1,19 +1,23 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using CommonUtils;
 using JetBrains.Annotations;
 
-namespace SafeAuthenticator.Native {
+namespace SafeAuthenticator.Native
+{
   [PublicAPI]
   public enum MDataAction
   {
     // ReSharper disable once InconsistentNaming
     Insert,
+
     // ReSharper disable once InconsistentNaming
     Update,
+
     // ReSharper disable once InconsistentNaming
     Delete,
+
     // ReSharper disable once InconsistentNaming
     ManagePermissions,
   }
@@ -94,6 +98,7 @@ namespace SafeAuthenticator.Native {
     internal bool AppContainer;
     internal IntPtr ContainersPtr;
     internal UIntPtr ContainersLen;
+
     // ReSharper disable once NotAccessedField.Compiler
     internal UIntPtr ContainersCap;
 
@@ -132,6 +137,7 @@ namespace SafeAuthenticator.Native {
     internal AppExchangeInfo App;
     internal IntPtr ContainersPtr;
     internal UIntPtr ContainersLen;
+
     // ReSharper disable once NotAccessedField.Compiler
     internal UIntPtr ContainersCap;
 
@@ -191,6 +197,7 @@ namespace SafeAuthenticator.Native {
     internal AppExchangeInfo App;
     internal IntPtr MDataPtr;
     internal UIntPtr MDataLen;
+
     // ReSharper disable once NotAccessedField.Compiler
     internal UIntPtr MDataCap;
 
@@ -246,6 +253,7 @@ namespace SafeAuthenticator.Native {
     internal AccessContainerEntryNative AccessContainerEntry;
     internal IntPtr BootstrapConfigPtr;
     internal UIntPtr BootstrapConfigLen;
+
     // ReSharper disable once NotAccessedField.Compiler
     internal UIntPtr BootstrapConfigCap;
 
@@ -309,6 +317,7 @@ namespace SafeAuthenticator.Native {
   {
     internal IntPtr ContainersPtr;
     internal UIntPtr ContainersLen;
+
     // ReSharper disable once NotAccessedField.Compiler
     internal UIntPtr ContainersCap;
 
@@ -467,6 +476,7 @@ namespace SafeAuthenticator.Native {
     internal uint ModifiedNsec;
     internal IntPtr UserMetadataPtr;
     internal UIntPtr UserMetadataLen;
+
     // ReSharper disable once NotAccessedField.Compiler
     internal UIntPtr UserMetadataCap;
     [MarshalAs(UnmanagedType.ByValArray, SizeConst = (int)AppConstants.XorNameLen)]
@@ -525,5 +535,4 @@ namespace SafeAuthenticator.Native {
       BindingUtils.FreeList(ref ContainersPtr, ref ContainersLen);
     }
   }
-
 }

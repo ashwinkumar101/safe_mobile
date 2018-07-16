@@ -2,8 +2,12 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
-namespace SafeAuthenticator.Native {
-  public abstract class IpcReq { }
+#pragma warning disable SA1401 // Fields should be private
+namespace SafeAuthenticator.Native
+{
+  public abstract class IpcReq
+    {
+    }
 
   [PublicAPI]
   public class AuthIpcReq : IpcReq
@@ -85,3 +89,4 @@ namespace SafeAuthenticator.Native {
     }
   }
 }
+#pragma warning restore SA1401 // Fields should be private

@@ -11,6 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="..\stylecop.json" Link="stylecop.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Acr.UserDialogs" Version="7.0.1" />
     <PackageReference Include="JetBrains.Annotations" Version="11.1.0" />
     <PackageReference Include="System.ValueTuple" Version="4.4.0" />
@@ -21,5 +25,5 @@
   <ItemGroup>
     <ProjectReference Include="..\..\CommonUtils\CommonUtils\CommonUtils.csproj" />
   </ItemGroup>
-
+  <Import Project="$(MSBuildThisFileDirectory)..\CodeStyles.targets" />
 </Project>

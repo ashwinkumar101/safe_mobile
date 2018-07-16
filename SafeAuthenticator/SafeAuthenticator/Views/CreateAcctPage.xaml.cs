@@ -6,23 +6,29 @@ using SafeAuthenticator.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace SafeAuthenticator.Views {
+namespace SafeAuthenticator.Views
+{
   [XamlCompilation(XamlCompilationOptions.Compile)]
-  public partial class CreateAcctPage : ContentPage, ICleanup {
-    public CreateAcctPage() {
+  public partial class CreateAcctPage : ContentPage, ICleanup
+    {
+    public CreateAcctPage()
+    {
       InitializeComponent();
 
       MessagingCenter.Subscribe<CreateAcctViewModel>(
         this,
         MessengerConstants.NavHomePage,
-        async _ => {
+        async _ =>
+        {
           MessageCenterUnsubscribe();
-          if (!App.IsPageValid(this)) {
+          if (!App.IsPageValid(this))
+            {
             return;
           }
 
           var rootPage = Navigation.NavigationStack.FirstOrDefault();
-          if (rootPage == null) {
+          if (rootPage == null)
+          {
             return;
           }
           Debug.WriteLine("CreateAcctPage -> HomePage");
@@ -31,7 +37,8 @@ namespace SafeAuthenticator.Views {
         });
     }
 
-    public void MessageCenterUnsubscribe() {
+    public void MessageCenterUnsubscribe()
+    {
       MessagingCenter.Unsubscribe<CreateAcctViewModel>(this, MessengerConstants.NavHomePage);
     }
   }

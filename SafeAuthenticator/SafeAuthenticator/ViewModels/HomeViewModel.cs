@@ -6,18 +6,27 @@ using SafeAuthenticator.Helpers;
 using SafeAuthenticator.Models;
 using Xamarin.Forms;
 
-namespace SafeAuthenticator.ViewModels {
-  internal class HomeViewModel : BaseViewModel {
+namespace SafeAuthenticator.ViewModels
+{
+  internal class HomeViewModel : BaseViewModel
+    {
     private string _accountStorageInfo;
     private bool _isRefreshing;
+
     public ICommand LogoutCommand { get; }
+
     public ObservableRangeCollection<RegisteredAppModel> Apps { get; set; }
+
     public bool IsRefreshing { get => _isRefreshing; private set => SetProperty(ref _isRefreshing, value); }
+
     public ICommand RefreshAccountsCommand { get; }
+
     public ICommand AccountSelectedCommand { get; }
+
     public string AccountStorageInfo { get => _accountStorageInfo; set => SetProperty(ref _accountStorageInfo, value); }
 
-    public HomeViewModel() {
+    public HomeViewModel()
+    {
       IsRefreshing = false;
       Apps = new ObservableRangeCollection<RegisteredAppModel>();
       RefreshAccountsCommand = new Command(OnRefreshAccounts);
@@ -27,17 +36,21 @@ namespace SafeAuthenticator.ViewModels {
       Device.BeginInvokeOnMainThread(OnRefreshAccounts);
     }
 
-    private void OnAccountSelected(RegisteredAppModel appModelInfo) {
+    private void OnAccountSelected(RegisteredAppModel appModelInfo)
+    {
       MessagingCenter.Send(this, MessengerConstants.NavAppInfoPage, appModelInfo);
     }
 
-    private async void OnLogout() {
+    private async void OnLogout()
+    {
       await Authenticator.LogoutAsync();
       MessagingCenter.Send(this, MessengerConstants.NavLoginPage);
     }
 
-    private async void OnRefreshAccounts() {
-      try {
+    private async void OnRefreshAccounts()
+    {
+      try
+        {
         IsRefreshing = true;
         var registeredApps = await Authenticator.GetRegisteredAppsAsync();
         Apps.AddRange(registeredApps.Except(Apps));
@@ -45,7 +58,9 @@ namespace SafeAuthenticator.ViewModels {
         var acctStorageTuple = await Authenticator.GetAccountInfoAsync();
         AccountStorageInfo = $"{acctStorageTuple.Item1} / {acctStorageTuple.Item2}";
         IsRefreshing = false;
-      } catch (Exception ex) {
+      }
+        catch (Exception ex)
+        {
         await Application.Current.MainPage.DisplayAlert("Error", $"Refresh Accounts Failed: {ex.Message}", "OK");
       }
     }
