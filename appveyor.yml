@@ -1,0 +1,13 @@
+environment: 
+
+cache:
+  - '%temp%\nativeauthlibs'
+  - packages -> **\**\packages.config
+  - '%USERPROFILE%\.nuget\packages'
+  - SafeAuthenticator\tools -> SafeAuthenticator\tests\build.cake, SafeAuthenticator\tests\build.ps1, SafeAuthenticator\tests\build.sh
+
+image: Visual Studio 2017
+
+build_script:
+  - ps: cd SafeAuthenticator/tests/
+  - ps: ./build.ps1
