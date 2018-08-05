@@ -1,5 +1,6 @@
-#addin Cake.Curl
+#load "AndroidTest.cake"
 
+#addin Cake.Curl
 using System.Linq;
 
 var target = Argument ("target", "Default");
@@ -157,6 +158,7 @@ Task ("UnZip-Libs")
 
 Task ("Default")
   .IsDependentOn ("UnZip-Libs")
+  .IsDependentOn ("test-android-emu")
   .Does (() => {
 
   });

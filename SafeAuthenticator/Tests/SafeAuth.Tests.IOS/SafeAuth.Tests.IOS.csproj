@@ -42,6 +42,9 @@
     <MtouchArch>i386, x86_64</MtouchArch>
     <ConsolePause>false</ConsolePause>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <MtouchDebug>true</MtouchDebug>
+    <CodesignKey>iPhone Developer: Ashwin Kumar (QY457ZUAH2)</CodesignKey>
+    <CodesignProvision />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
     <DebugSymbols>true</DebugSymbols>
@@ -215,5 +218,5 @@
     <Exec ConsoleToMSBuild="true" Condition="'@(NativeSafeAuthLibs-&gt;Count())' == '0' AND '$(OS)' == 'UNIX'" Command="cd .. &amp;&amp; cd .\CakeScripts\ &amp;&amp; bash build.sh --Configuration=Release --target=Unzip-Libs">
       <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfExec" />
     </Exec>
-  </Target>  
+  </Target>
 </Project>
