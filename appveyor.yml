@@ -1,11 +1,45 @@
-cache:
-  - '%temp%\nativeauthlibs'
-  - packages -> **\**\packages.config
-  - '%USERPROFILE%\.nuget\packages'
-  - SafeAuthenticator\tools -> SafeAuthenticator\CakeScripts\build.cake, SafeAuthenticator\CakeScripts\build.ps1, SafeAuthenticator\CakeScripts\build.sh
-
+environment: 
+  ANDROID_HOME: "C:\\Program Files (x86)\\Android\\android-sdk"
+  
 image: Visual Studio 2017
 
-build_script:
-  - ps: cd SafeAuthenticator/CakeScripts/
-  - ps: ./build.ps1
+init:
+  #- pwd
+  #- echo y | .\sdkmanager.bat "system-images;android-26;google_apis;x86" --no_https
+  #- echo y | .\sdkmanager.bat create avd -n SafeEmulator -d 29 -k "system-images;android-26;google_apis;x86"
+  #- "%ANDROID_HOME%"/tools/bin/avdmanager create avd -n myavd -d 29 -k "system-images;android-26;google_apis;x86"
+  #- echo y | .\sdkmanager.bat "system-images;android-26;google_apis;x86" --no_https
+  #- "%ANDROID_HOME%/tools/bin/avdmanager.bat" create avd -n myavd -d 29 -k "system-images;android-27;google_apis;x86"
+  
+  #- cd "%ANDROID_HOME%"/tools/bin
+  #- cd $env:ANDROID_HOME/tools/bin
+  #- echo no | ./avdmanager.bat create avd --force --name SafeEmulator --abi google_apis/x86_64 --package 'system-images;android-26;google_apis;x86_64'
+
+#build_script:
+
+  #- ps: cd $env:ANDROID_HOME/tools/bin
+  #- ps: for($i=0;$i -lt 30;$i++) { $response += "y`n"}; $response | cmd /c '$env:ANDROID_HOME/tools/bin/sdkmanager "system-images;android-26;google_apis;x86" --no_https' --update
+  #- ps: for($i=0;$i -lt 30;$i++) { $response += "y`n"}; $response | cmd /c '.\sdkmanager.bat "system-images;android-26;google_apis;x86" --no_https' 
+  
+  #- ps: for($i=0;$i -lt 30;$i++) { $response += "y`n"}; $response | .\sdkmanager.bat "system-images;android-26;google_apis;x86" --no_https
+  #- ps: echo "Creating avd"
+  #- ps: .\sdkmanager.bat create avd -n SafeEmulator -d 29 -k "system-images;android-26;google_apis;x86"
+  #- ps: cd $env:ANDROID_HOME/tools/bin
+  #- ps: echo no | .\avdmanager.bat create avd --force --name SafeEmulator --abi google_apis/x86_64 --package 'system-images;android-26;google_apis;x86_64'
+  #- ps:  $env:ANDROID_HOME/tools/bin/.sdkmanager.bat create avd -n myavd -d 29 -k "system-images;android-27;google_apis;x86"
+  - ps: cd $env:ANDROID_HOME/tools
+  - ps: ls
+  - ps: ./android.bat create avd -n myavd -k "system-images;android-26;google_apis;x86"
+  - ps: .\emulator -list-avds
+  #- ps: .\emulator -avd Android_Accelerated_x86_Nougat
+
+ 
+
+#build_script:
+  #- ps: echo $env:ANDROID_HOME
+  #- ps: cd $env:ANDROID_HOME/Tools
+  #- ps: ./emulator -list-avds
+  #- ps: ./emulator -avd SafeEmulator
+
+  #- ps: cd SafeAuthenticator/tests/
+  #- ps: ./build.ps1

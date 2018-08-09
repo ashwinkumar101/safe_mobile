@@ -1,78 +1,24 @@
+#load "Utility.cake"
+
 #addin nuget:?package=Cake.Android.Adb&version=3.0.0
 #addin nuget:?package=Cake.Android.AvdManager&version=1.0.3
 #addin nuget:?package=Cake.FileHelpers
-#addin "Cake.Powershell"
 
-//var TARGET = Argument ("target", "Default");
-var COMMON_PROJ = "../../CommonUtils/CommonUtils/CommonUtils.csproj";
 var ANDROID_PROJ = "../Tests/SafeAuth.Tests.Android/SafeAuth.Tests.Android.csproj";
-
 var ANDROID_APK_PATH = "../Tests/SafeAuth.Tests.Android/bin/Debug/com.safe.auth.tests-Signed.apk";
-var ANDROID_TEST_RESULTS_PATH = "../Tests/SafeAuth.Tests.Android/TestResult.xml";
+var ANDROID_TEST_RESULTS_PATH = "../Tests/SafeAuth.Tests.Android/AndroidTestResult.xml";
 var ANDROID_AVD = "SafeEmulator";
 var ANDROID_PKG_NAME = "com.safe.auth.tests";
 var ANDROID_EMU_TARGET = EnvironmentVariable("ANDROID_EMU_TARGET") ?? "system-images;android-26;google_apis;x86";
 var ANDROID_EMU_DEVICE = EnvironmentVariable("ANDROID_EMU_DEVICE") ?? "Nexus 6P";
 
-var TCP_LISTEN_TIMEOUT = 60; //set timeout if needed
-var TCP_LISTEN_PORT = 10500;
+var ANDROID_TCP_LISTEN_HOST = System.Net.IPAddress.Any;
+var ANDROID_TCP_LISTEN_PORT = 10500;
+var ANDROID_HOME = EnvironmentVariable("ANDROID_HOME");
 
-//var ANDROID_HOME = EnvironmentVariable("ANDROID_HOME");
-var ANDROID_HOME = EnvironmentVariable("ANDROID_HOME") ?? "ANDROID_HOME";
-
-
-Func <Task> DownloadTcpTextAsync = ()=> System.Threading.Tasks.Task.Run (() => 
-{
-    System.Net.Sockets.TcpListener server = null;
-    try
-        { 
-            server = new System.Net.Sockets.TcpListener(System.Net.IPAddress.Any, TCP_LISTEN_PORT);
-            server.Start();
-            while (true)
-            {
-                System.Net.Sockets.TcpClient client = server.AcceptTcpClient();
-                System.Net.Sockets.NetworkStream stream = client.GetStream();
-                StreamReader data_in = new StreamReader(client.GetStream());
-                var result = data_in.ReadToEnd();
-                System.IO.File.AppendAllText(ANDROID_TEST_RESULTS_PATH, result);
-                client.Close();
-                break;
-            }
-        }
-        catch (System.Net.Sockets.SocketException e)
-        {
-            Information("SocketException: {0}", e);
-        }
-        finally
-        {
-            server.Stop();
-        }
-});
-
-
-
-// Task("UnZip-Libs")
-// .Does(()=>{
-
-// });
-
-
-// Task("Clean")
-//     .Does(() =>
-// {
-//     CleanDirectory("./SafeAuthenticator.Android/bin/Debug");
-// });
-
-Task("Restore-NuGet-Packages")
-    //.IsDependentOn("Clean")
-    .Does(() =>
-{
-    NuGetRestore(COMMON_PROJ);
-    NuGetRestore("../SafeAuthenticator.sln");
-});
 
 Task ("build-android")
-    .IsDependentOn("Restore-NuGet-Packages")
+    //.IsDependentOn("Restore-NuGet-Packages")
     .Does (() =>
 {
     // Build the app in debug mode
@@ -91,6 +37,8 @@ Task ("test-android-emu")
 {        
     if (EnvironmentVariable("ANDROID_SKIP_AVD_CREATE") == null) {
         var avdSettings = new AndroidAvdManagerToolSettings  { SdkRoot = ANDROID_HOME };
+
+        Information("after if ");
 
         // Create the AVD if necessary
         Information ("Creating AVD if necessary: {0}...", ANDROID_AVD);     
@@ -156,37 +104,21 @@ Task ("test-android-emu")
     });
 
     //start the TCP Test results listener
-    Information("Started TCP Test Results Listener on port: {0}", TCP_LISTEN_PORT);
-    var tcpListenerTask = DownloadTcpTextAsync();
+    Information("Started TCP Test Results Listener on port: {0}", ANDROID_TCP_LISTEN_PORT);
+    var tcpListenerTask = DownloadTcpTextAsync(ANDROID_TCP_LISTEN_HOST,ANDROID_TCP_LISTEN_PORT,ANDROID_TEST_RESULTS_PATH);
+
     // Launch the app on the emulator
     AdbShell ($"am start -n {ANDROID_PKG_NAME}/{ANDROID_PKG_NAME}.MainActivity", adbSettings);    
-
-    // AdbShell("monkey -p com.safe.auth.tests -c android.intent.category.LAUNCHER 1",adbSettings);
         
     // // Wait for the test results to come back
     Information("Waiting for tests...");
     tcpListenerTask.Wait ();
 
-    //AddPlatformToTestResults(ANDROID_TEST_RESULTS_PATH, "Android");
-
     // Close emulator    
     emu.Kill();
 
 })
-.Finally(() =>
-  {  
-    var resultsFile = File(ANDROID_TEST_RESULTS_PATH);
-    if(AppVeyor.IsRunningOnAppVeyor)
-    {
-      AppVeyor.UploadTestResults(resultsFile.Path.FullPath, AppVeyorTestResultsType.MSTest);
-    }
-  });
-
-
-
-// Task("Default")
-//   .IsDependentOn("test-android-emu")
-//   .Does(() => {
-//   });
-
-// RunTarget (TARGET);
+.ReportError(exception =>
+{  
+    Information(exception.Message);
+});

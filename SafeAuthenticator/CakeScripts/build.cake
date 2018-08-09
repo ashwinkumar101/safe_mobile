@@ -1,5 +1,6 @@
 #load "AndroidTest.cake"
-
+#load "IOSTest.cake"
+#load "Utility.cake"
 #addin Cake.Curl
 using System.Linq;
 
@@ -158,7 +159,9 @@ Task ("UnZip-Libs")
 
 Task ("Default")
   .IsDependentOn ("UnZip-Libs")
+  .IsDependentOn("Restore-NuGet-Packages")
   .IsDependentOn ("test-android-emu")
+  //.IsDependentOn ("test-ios-emu")
   .Does (() => {
 
   });
