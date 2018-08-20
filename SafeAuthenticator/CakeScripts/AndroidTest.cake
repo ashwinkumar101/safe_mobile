@@ -1,5 +1,6 @@
 #load "Utility.cake"
 
+#addin nuget:?package=Cake.Android.SdkManager
 #addin nuget:?package=Cake.Android.Adb&version=3.0.0
 #addin nuget:?package=Cake.Android.AvdManager&version=1.0.3
 #addin nuget:?package=Cake.FileHelpers
@@ -7,7 +8,7 @@
 var ANDROID_PROJ = "../Tests/SafeAuth.Tests.Android/SafeAuth.Tests.Android.csproj";
 var ANDROID_APK_PATH = "../Tests/SafeAuth.Tests.Android/bin/Debug/com.safe.auth.tests-Signed.apk";
 var ANDROID_TEST_RESULTS_PATH = "../Tests/SafeAuth.Tests.Android/AndroidTestResult.xml";
-var ANDROID_AVD = "SafeEmulator";
+var ANDROID_AVD = "SafeEmulator"; 
 var ANDROID_PKG_NAME = "com.safe.auth.tests";
 var ANDROID_EMU_TARGET = EnvironmentVariable("ANDROID_EMU_TARGET") ?? "system-images;android-26;google_apis;x86";
 var ANDROID_EMU_DEVICE = EnvironmentVariable("ANDROID_EMU_DEVICE") ?? "Nexus 6P";
@@ -15,10 +16,10 @@ var ANDROID_EMU_DEVICE = EnvironmentVariable("ANDROID_EMU_DEVICE") ?? "Nexus 6P"
 var ANDROID_TCP_LISTEN_HOST = System.Net.IPAddress.Any;
 var ANDROID_TCP_LISTEN_PORT = 10500;
 var ANDROID_HOME = EnvironmentVariable("ANDROID_HOME");
+//var ANDROID_HOME = EnvironmentVariable ("ANDROID_HOME") ?? Argument ("android_home", "");
 
 
 Task ("build-android")
-    //.IsDependentOn("Restore-NuGet-Packages")
     .Does (() =>
 {
     // Build the app in debug mode
@@ -27,6 +28,7 @@ Task ("build-android")
         c.Configuration = "Debug";
         c.Targets.Clear();
         c.Targets.Add("Rebuild");
+        c.SetVerbosity(Verbosity.Minimal);
     });
 });
 
@@ -35,37 +37,55 @@ Task ("test-android-emu")
     .IsDependentOn ("build-android")
     .Does (async() =>
 {        
-    if (EnvironmentVariable("ANDROID_SKIP_AVD_CREATE") == null) {
+
+    // var androidSdkSettings = new AndroidSdkManagerToolSettings { 
+	// 	SdkRoot = ANDROID_HOME,
+	// 	SkipVersionCheck = true
+	// };
+
+	// try { AcceptLicenses (androidSdkSettings); } catch { }
+
+	// AndroidSdkManagerInstall (new [] 
+    // {
+    //     "platforms;android-26"
+    // }, androidSdkSettings);
+        
+     if (EnvironmentVariable("ANDROID_SKIP_AVD_CREATE") == null) {
         var avdSettings = new AndroidAvdManagerToolSettings  { SdkRoot = ANDROID_HOME };
 
-        Information("after if ");
+        //Information("after if ");
 
-        // Create the AVD if necessary
-        Information ("Creating AVD if necessary: {0}...", ANDROID_AVD);     
-        if (!AndroidAvdListAvds (avdSettings).Any (a => a.Name == ANDROID_AVD))
-            AndroidAvdCreate (ANDROID_AVD, ANDROID_EMU_TARGET, ANDROID_EMU_DEVICE, force: true, settings: avdSettings);
+    //     // Create the AVD if necessary
+    //     Information ("Creating AVD if necessary: {0}...", ANDROID_AVD);     
+    //     if (!AndroidAvdListAvds (avdSettings).Any (a => a.Name == ANDROID_AVD))
+    //         Information("gone inside if");
+    //         AndroidAvdCreate (ANDROID_AVD, ANDROID_EMU_TARGET, ANDROID_EMU_DEVICE, force: true, settings: avdSettings);
     }
+    //Information("setting the exe");
     // We need to find `emulator` and the best way is to try within a specified ANDROID_HOME
-    var emulatorExt = IsRunningOnWindows() ? ".exe" : "";
-    string emulatorPath = "emulator" + emulatorExt;
-            
-    if (ANDROID_HOME != null) {
-        var andHome = new DirectoryPath(ANDROID_HOME);
-        if (DirectoryExists(andHome)) {
-            emulatorPath = MakeAbsolute(andHome.Combine("tools").CombineWithFilePath("emulator" + emulatorExt)).FullPath;
-            if (!FileExists(emulatorPath))
-                emulatorPath = MakeAbsolute(andHome.Combine("emulator").CombineWithFilePath("emulator" + emulatorExt)).FullPath;
-            if (!FileExists(emulatorPath))
-                emulatorPath = "emulator" + emulatorExt;
-        }
-    }
-         
-    // Start up the emulator by name
-    var emu = StartAndReturnProcess (emulatorPath, new ProcessSettings { 
-        Arguments = $"-avd {ANDROID_AVD}" });
+    // var emulatorExt = IsRunningOnWindows() ? ".exe" : "";
+    // string emulatorPath = "emulator" + emulatorExt;
+
+    // Information("setting full path for emulator");        
+    // if (ANDROID_HOME != null) {
+    //     var andHome = new DirectoryPath(ANDROID_HOME);
+    //     if (DirectoryExists(andHome)) {
+    //         emulatorPath = MakeAbsolute(andHome.Combine("tools").CombineWithFilePath("emulator" + emulatorExt)).FullPath;
+    //         if (!FileExists(emulatorPath))
+    //             emulatorPath = MakeAbsolute(andHome.Combine("emulator").CombineWithFilePath("emulator" + emulatorExt)).FullPath;
+    //         if (!FileExists(emulatorPath))
+    //             emulatorPath = "emulator" + emulatorExt;
+    //     }
+    // }
+
+    // Information ("Starting emulator, emulator path:", emulatorPath);     
+    // // Start up the emulator by name
+    // var emu = StartAndReturnProcess (emulatorPath, new ProcessSettings { 
+    //     Arguments = $"-avd {ANDROID_AVD}" });
+
         var adbSettings = new AdbToolSettings { SdkRoot = ANDROID_HOME };
         
-        
+        Information ("Keep checking adb for an emulator with an AVD name matching the one we just started");     
         // Keep checking adb for an emulator with an AVD name matching the one we just started
         var emuSerial = string.Empty;
         for (int i = 0; i < 100; i++) {
@@ -101,6 +121,7 @@ Task ("test-android-emu")
         c.Properties["AdbTarget"] = new List<string> { "-s " + emuSerial };
         c.Targets.Clear();
         c.Targets.Add("Install");
+        c.SetVerbosity(Verbosity.Minimal);
     });
 
     //start the TCP Test results listener
@@ -109,15 +130,24 @@ Task ("test-android-emu")
 
     // Launch the app on the emulator
     AdbShell ($"am start -n {ANDROID_PKG_NAME}/{ANDROID_PKG_NAME}.MainActivity", adbSettings);    
-        
-    // // Wait for the test results to come back
+       
+    // Wait for the test results to come back
     Information("Waiting for tests...");
     tcpListenerTask.Wait ();
+    Information("obtained result");
 
     // Close emulator    
-    emu.Kill();
+    //emu.Kill();
 
 })
+.Finally(() =>
+  {  
+    var resultsFile = File(ANDROID_TEST_RESULTS_PATH);
+    if(AppVeyor.IsRunningOnAppVeyor)
+    {
+      AppVeyor.UploadTestResults(resultsFile.Path.FullPath, AppVeyorTestResultsType.NUnit3);
+    }
+  })
 .ReportError(exception =>
 {  
     Information(exception.Message);
