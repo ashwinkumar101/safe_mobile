@@ -59,7 +59,7 @@ build_script:
 #   - powershell .\build.ps1 -Target Default -Verbosity normal
 #   - ' "%ANDROID_HOME%\platform-tools\adb.exe" emu kill -9 '   
   - ' "%ANDROID_HOME%\emulator\emulator.exe" -list-avds '
-  - ' "%ANDROID_HOME%\emulator\emulator.exe" -avd SafeEmulator -no-audio -no-window'
+  - ' START "%ANDROID_HOME%\emulator\emulator.exe" -avd SafeEmulator -no-audio -no-window'
   - TIMEOUT 120
   - echo dummy | "%ANDROID_HOME%\platform-tools\adb.exe" shell input keyevent 82 
   - echo "finally!!!!!!!!"
