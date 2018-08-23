@@ -115,7 +115,7 @@ Task ("test-android-emu")
         Information ("Uninstalled old: {0}", ANDROID_PKG_NAME);
     } catch { }
 
-    Information("installing and pushing app in emulator")
+    Information("installing and pushing app in emulator");
     // Use the Install target to push the app onto emulator
     MSBuild (ANDROID_PROJ, c => {
         c.Configuration = "Debug";
