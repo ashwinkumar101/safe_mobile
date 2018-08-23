@@ -158,8 +158,8 @@ Task ("UnZip-Libs")
   });
 
 Task ("Default")
-  .IsDependentOn ("UnZip-Libs")
-  .IsDependentOn("Restore-NuGet-Packages")
+  //.IsDependentOn ("UnZip-Libs")
+  //.IsDependentOn("Restore-NuGet-Packages")
   .IsDependentOn ("test-android-emu")
   //.IsDependentOn ("test-ios-emu")
   .Does (() => {

@@ -48,19 +48,20 @@ before_build:
 #   - echo no | "%ANDROID_HOME%\tools\android.bat" create avd --force -n SafeEmulator -t android-21 --abi armeabi-v7a
   # - echo no | "%ANDROID_HOME%\tools\android.bat" create avd --force -n test -t android-21 --abi armeabi-v7a
   - ps: Start-Process "C:\android-sdk-windows\emulator\emulator.exe" "-avd SafeEmulator -no-audio -no-window" 
-  - ps: Start-sleep -s 120
-  - echo dummy | "%ANDROID_HOME%\platform-tools\adb.exe" shell input keyevent 82 
+  # - ps: Start-sleep -s 120
+  # - echo dummy | "%ANDROID_HOME%\platform-tools\adb.exe" shell input keyevent 82 
 
 build_script:
   - ps: $env:Path += ";C:\android-sdk-windows\platform-tools";
 #   - ps: $env:Path += ";C:\android-sdk-windows\tools";
 #   - ps: $env:Path += ";C:\android-sdk-windows\tools\bin";
-#   - ps: cd SafeAuthenticator/CakeScripts
-#   - powershell .\build.ps1 -Target Default -Verbosity normal
+  - ps: cd SafeAuthenticator/CakeScripts
+  - powershell .\build.ps1 -Target Default -Verbosity normal
 #   - ' "%ANDROID_HOME%\platform-tools\adb.exe" emu kill -9 '   
+
   # - ' "%ANDROID_HOME%\emulator\emulator.exe" -list-avds '
   # - ' START "%ANDROID_HOME%\emulator\emulator.exe" -avd SafeEmulator -no-audio -no-window'
   # - TIMEOUT 120
   # - echo dummy | "%ANDROID_HOME%\platform-tools\adb.exe" shell input keyevent 82 
-  - echo "finally!!!!!!!! XD"
+
 # test: off
