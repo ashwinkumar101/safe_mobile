@@ -34,7 +34,7 @@ Task ("build-android")
 
 
 Task ("test-android-emu")
-    //.IsDependentOn ("build-android")
+    .IsDependentOn ("build-android")
     .Does (async() =>
 {        
 

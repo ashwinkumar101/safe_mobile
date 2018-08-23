@@ -8,11 +8,11 @@ environment:
   CAKE_SETTINGS_SKIPVERIFICATION: "true"
   SDK_TOOLS_URL: https://dl.google.com/android/repository/sdk-tools-windows-3859397.zip
 
-# cache:
-#   - '%ANDROID_HOME%'
-#   - '%temp%\nativeauthlibs'
-#   - '%USERPROFILE%\.nuget\packages'
-#   - SafeAuthenticator\CakeScripts\tools -> SafeAuthenticator\CakeScripts\build.cake, SafeAuthenticator\CakeScripts\build.ps1, SafeAuthenticator\CakeScripts\build.sh
+cache:
+  - '%ANDROID_HOME%'
+  - '%temp%\nativeauthlibs'
+  - '%USERPROFILE%\.nuget\packages'
+  - SafeAuthenticator\CakeScripts\tools -> SafeAuthenticator\CakeScripts\build.cake, SafeAuthenticator\CakeScripts\build.ps1, SafeAuthenticator\CakeScripts\build.sh
 
 install:
   #- cd \
@@ -40,28 +40,21 @@ install:
   - yes 2> nul | sdkmanager --licenses > nul
   - sdkmanager "platform-tools" "platforms;android-24" "emulator" "build-tools;24.0.3"  "system-images;android-24;default;armeabi-v7a"
   - echo no | avdmanager create avd -n SafeEmulator -k "system-images;android-24;default;armeabi-v7a" --abi armeabi-v7a
+  - ps: Start-Process "C:\android-sdk-windows\emulator\emulator.exe" "-avd SafeEmulator -no-audio -no-window" 
   
-  #- echo y | sdkmanager "system-images;android-26;google_apis;x86" --no_https
 
-
-before_build:
+# before_build:
 #   - echo no | "%ANDROID_HOME%\tools\android.bat" create avd --force -n SafeEmulator -t android-21 --abi armeabi-v7a
   # - echo no | "%ANDROID_HOME%\tools\android.bat" create avd --force -n test -t android-21 --abi armeabi-v7a
-  - ps: Start-Process "C:\android-sdk-windows\emulator\emulator.exe" "-avd SafeEmulator -no-audio -no-window" 
   # - ps: Start-sleep -s 120
   # - echo dummy | "%ANDROID_HOME%\platform-tools\adb.exe" shell input keyevent 82 
 
 build_script:
   - ps: $env:Path += ";C:\android-sdk-windows\platform-tools";
-#   - ps: $env:Path += ";C:\android-sdk-windows\tools";
-#   - ps: $env:Path += ";C:\android-sdk-windows\tools\bin";
+  - ps: $env:Path += ";C:\android-sdk-windows\tools";
+  - ps: $env:Path += ";C:\android-sdk-windows\tools\bin";
   - ps: cd SafeAuthenticator/CakeScripts
   - powershell .\build.ps1 -Target Default -Verbosity normal
-#   - ' "%ANDROID_HOME%\platform-tools\adb.exe" emu kill -9 '   
+  - ' "%ANDROID_HOME%\platform-tools\adb.exe" emu kill -9 '   
 
-  # - ' "%ANDROID_HOME%\emulator\emulator.exe" -list-avds '
-  # - ' START "%ANDROID_HOME%\emulator\emulator.exe" -avd SafeEmulator -no-audio -no-window'
-  # - TIMEOUT 120
-  # - echo dummy | "%ANDROID_HOME%\platform-tools\adb.exe" shell input keyevent 82 
-
-# test: off
+test: off
