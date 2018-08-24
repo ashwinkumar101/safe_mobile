@@ -161,6 +161,7 @@ Task ("Default")
   .IsDependentOn ("UnZip-Libs")
   .IsDependentOn("Restore-NuGet-Packages")
   .IsDependentOn ("test-android-emu")
+  .IsDependentOn ("Analyze-Tests")
   //.IsDependentOn ("test-ios-emu")
   .Does (() => {
 

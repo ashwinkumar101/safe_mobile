@@ -42,6 +42,7 @@ namespace SafeAuth.Tests
             string password = Utils.GetRandomString(10);
             var (auth, session) = await Utils.CreateTestApp(secret, password, Utils.GetRandomString(5));
             Assert.That(async () => await Utils.LoginTestApp(secret, Utils.GetRandomString(10)), Throws.TypeOf<FfiException>());
+            Assert.Fail();
         }
 
 
