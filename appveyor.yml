@@ -30,10 +30,10 @@ install:
   # - echo y | "%ANDROID_HOME%\tools\android.bat" update sdk -u -a -t sys-img-armeabi-v7a-android-21
   # #- echo y | "%ANDROID_HOME%\tools\android.bat" update sdk -u -a -t sys-img-x86_64-android-26   
 
-  - if not exist android-sdk-windows/tools mkdir "%ANDROID_HOME%"
-  - if not exist android-sdk-windows/tools cd "%ANDROID_HOME%"
-  - if not exist android-sdk-windows/tools appveyor DownloadFile https://dl.google.com/android/repository/sdk-tools-windows-3859397.zip -FileName "sdk-tools.zip"
-  - if not exist android-sdk-windows/tools 7z x sdk-tools.zip > nul 
+  - if not exist "%ANDROID_HOME%" mkdir "%ANDROID_HOME%"
+  - if not exist "%ANDROID_HOME%"/tools cd "%ANDROID_HOME%"
+  - if not exist "%ANDROID_HOME%"/tools appveyor DownloadFile https://dl.google.com/android/repository/sdk-tools-windows-3859397.zip -FileName "sdk-tools.zip"
+  - if not exist "%ANDROID_HOME%"/tools 7z x sdk-tools.zip > nul 
   - cd C:\projects\safe_mobile
   - set PATH=%PATH%;"%ANDROID_HOME%\tools\bin"
   - yes 2> nul | sdkmanager --licenses > nul
